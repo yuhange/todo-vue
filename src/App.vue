@@ -47,6 +47,8 @@
 <script>
 import ToDo from './components/ToDo'
 import { mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 const filters = {
   all: todos => todos,
   active: todos => todos.filter(todo => !todo.done),
@@ -60,35 +62,40 @@ export default {
   data() {
     return {
       visibility: 'all',
-      filters: filters
+      filters: filters,
+      // todos:[]
     }
   },
   computed: {
-    todos () {
-      return this.$store.state.todos
-    },
+    ...mapGetters({
+      todos: 'allTodos',
+      remaining: 'remaining'
+    }),
     allChecked () {
       return this.todos.every(todo => todo.done)
     },
     filteredTodos() {
       return filters[this.visibility](this.todos)
     },
-    remaining() {
-      return this.todos.filter(todo => !todo.done).length
-    }
+    // remaining() {
+    //   return this.todos.filter(todo => !todo.done).length
+    // }
+  },
+  created () {
+    this.$store.dispatch('getAllTodos')
+    this.$store.dispatch('getRemaining')
   },
   methods: {
-    ...mapMutations([
-      'toggleAll',
-      'clearCompleted'
-      ]),
     addTodo(e) {
       var text = e.target.value
       // console.log(text)
       if (text.trim()) {
-        this.$store.commit('addTodo', { text })
+        this.$store.dispatch('addTodo', text)
       }
       e.target.value = ''
+    },
+    clearCompleted() {
+      this.$store.dispatch('clearCompleted')
     }
   },
   filters: {

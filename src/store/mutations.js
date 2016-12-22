@@ -1,3 +1,5 @@
+import api from '../api'
+
 export const state = {
   todos:[
       {
@@ -11,13 +13,13 @@ export const state = {
 };
 
 export const mutations = {
-  addTodo (state, { text }) {
-  	console.log(text)
-    state.todos.push({
-      text,
-      done: false
-    })
-  },
+	addTodo (state, { text }) {
+	  	console.log(text)
+	    state.todos.push({
+	      text,
+	      done: false
+	    })
+	  },
 
   deleteTodo(state, {todo}) {
   	state.todos.splice(state.todos.indexOf(todo), 1)
@@ -41,4 +43,13 @@ export const mutations = {
   	state.todos = state.todos.filter(todo=>!todo.done)
   }
 
+};
+
+export const actions = {
+	getTodo({commit, state}) {
+		commit('getTodo')
+	},
+	addTodo({ commit, state }, text) {
+		commit('addTodo', text)
+	}
 }
