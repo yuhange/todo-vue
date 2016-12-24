@@ -3,12 +3,14 @@ import * as types from '../mutation-types'
 
 const state = {
   all: [],
-  remaining: 0
+  // remaining: 0,
+  history: []
 }
 
 const getters = {
   allTodos: state => state.all,
-  remaining: state => state.remaining
+  // remaining: state => state.remaining,
+  history: state => state.history
 }
 
 const actions = {
@@ -22,9 +24,22 @@ const actions = {
     })
   },
 
-  getRemaining ({commit}) {
-    commit(types.RECEIVE_REMAINING)
-  },
+  // getRemaining ({commit}) {
+  //   commit(types.RECEIVE_REMAINING)
+  // },
+
+  getHistoryTodos({commit}) {
+    // commit(types.RECEIVE_HISTORY_TODOS)
+    // api.getHistoryTodos(history => {
+    //   commit('RECEIVE_HISTORY_TODOS', {history})
+    // })
+    api.getHistoryTodos().then(response => {
+      var history = response.body.data
+      commit('RECEIVE_HISTORY_TODOS', {history})
+    }, err=> {
+      commit('RECEIVE_HISTORY_TODOS_FAILURE', err)
+    })
+  }, 
   
   addTodo({commit}, text) {
     // console.log(text)
@@ -51,11 +66,15 @@ const actions = {
 // mutations
 const mutations = {
   [types.RECEIVE_TODOS] (state, { todos }) {
-    console.log(todos)
+    // console.log(todos)
     state.all = todos
   },
-  [types.RECEIVE_REMAINING] (state) {
-    state.remaining = state.all.filter(todo => !todo.done).length
+  // [types.RECEIVE_REMAINING] (state) {
+  //   state.remaining = state.all.filter(todo => !todo.done).length
+  // },
+  [types.RECEIVE_HISTORY_TODOS] (state, {history}) {
+    // console.log(history)
+    state.history = history
   },
   [types.ADD_TODO] (state, {text}) {
     // console.log(text)
